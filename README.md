@@ -1,4 +1,5 @@
 # swapi
+<<<<<<< HEAD
 
 ## Project setup
 ```
@@ -22,3 +23,6 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+SWAPI implementation for skills proof.
+>>>>>>> e10c9feb6de686cf9220285442085df4a7d40df1
