@@ -63,6 +63,14 @@
                 }
 
             },
+            loadPeopleData: async function(peopleURL) 
+            {
+                axios.get(`${peopleURL}`).then(response => {
+                    this.peopleActive = response.data
+                    console.log(response);        
+                });
+
+            },
             loadInititalData: async function ()
             {
                 axios.get(`${api}/people/`).then( response => {
