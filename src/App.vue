@@ -5,6 +5,13 @@
             <div class="bg-white shadow-xl sm:rounded-lg flex" style="min-height: 800px; max-height:800px;">
                 <div class="w-3/12 bg-gray-200 pl-5 bg-opacity-25 border-r border-gray-200 overflow-y-scroll">
                    <ul>
+                       <li>
+                            <form v-on:keyup="searchPeoples">
+                                <div class="flex rounded-md overflow-hidden border border-gray-300">
+                                    <input v-model="searchTerm" type="text" class="flex-1 mx-4 py-2 text-sm focus:outline-none border-gray-300">
+                                </div>
+                            </form>
+                        </li>
                         <li :class="(peopleActive && peopleActive.url == people.url) ? 'bg-gray-300 bg-opacity-50' : ''"
                             v-for="people in peoples" :key="people.url"
                             @click="() => {loadPeopleData(people.url)}"
@@ -37,9 +44,25 @@
             return {
                 peoples: [],
                 peopleActive: null,
+
+                searchTerm: '',
             }
         },
         methods: {
+            searchPeoples: async function()
+            {
+                if(this.searchTerm)
+                {
+                    await axios.get(`${api}/people/?search=${this.searchTerm}`).then(response => {
+                        this.peoples = response.data.results
+                    });
+                }
+                else
+                {
+                    this.loadInititalData();
+                }
+
+            },
             loadInititalData: async function ()
             {
                 axios.get(`${api}/people/`).then( response => {
