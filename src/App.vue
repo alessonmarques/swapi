@@ -1,28 +1,36 @@
-<template>
-  <div id="app">
-    <h1>Teste</h1>
+<template >
+  <div id="app" >
+      <h2 class="font-semibold">The Star Wars API</h2>
+        <div class="py-12">
+            <div class="bg-white shadow-xl sm:rounded-lg flex" style="min-height: 800px; max-height:800px;">
+                <div class="w-3/12 bg-gray-200 pl-5 bg-opacity-25 border-r border-gray-200 overflow-y-scroll">
+                   
+                </div>
+                <div class="w-10/12 flex flex-col justify-between">
+                    <div class="w-full p-6 flex flex-col overflow-y-scroll h-full">
+                       
+                    </div>
+                </div>
+            </div>
+      </div>
   </div>
 </template>
 
 <script>
-import tailwindcss from '../node_modules/tailwindcss';
-
-
-export default {
-  name: 'app',
-  components: {
-    tailwindcss
-  }
-}
+    export default {
+        name: 'app',
+        components: {
+        },
+    }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+    #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+    }
 </style>
