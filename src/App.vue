@@ -1,9 +1,9 @@
 <template >
   <div id="app" >
-      <h2 class="font-semibold">The Star Wars</h2>
+      <h2 class="font-semibold">The Star Wars API</h2>
         <div class="py-12">
             <div class="bg-white shadow-xl sm:rounded-lg flex" style="min-height: 800px; max-height:800px;">
-                <div class="w-3/12 bg-gray-200 pl-5 bg-opacity-25 border-r border-gray-200 overflow-y-scroll">
+                <div class="w-5/12 bg-gray-200 pl-5 bg-opacity-25 border-r border-gray-200 overflow-y-scroll">
                    <ul>
                        <li>
                             <form v-on:keyup="searchPeoples">
@@ -20,13 +20,61 @@
                                 {{ people.name }}
                             </p>
                         </li>
+                        <li v-if="(searchTerm && peoples.length == 0)"
+                            class="p-6 text-lg text-gray-400 leading-7 border-b border-gray-200">
+                            <p class="flex items-center">
+                                None records found.
+                            </p>
+                        </li>
                     </ul>
                 </div>
-                <div class="w-10/12 flex flex-col justify-between">
-                    <div class="w-full p-6 flex flex-col overflow-y-scroll h-full">
-                       
+                <div class="w-7/12 flex flex-col justify-between">
+                    <div class="flex h-auto justify-center">
+                        <div class="w-auto p-6 flex flex-col text-2xl">
+                            <div v-if="(this.planetActive)"
+                                    class="text-left w-auto" >
+                                <p>
+                                    <b>Home World:</b> <span>{{ this.planetActive.name }}</span>
+                                </p>
+                                <p>
+                                    <b>Diameter:</b> <span>{{ this.planetActive.diameter }}</span>
+                                </p>
+                                <p>
+                                    <b>Gravity:</b> <span>{{ this.planetActive.gravity }}</span>
+                                </p>
+                                <p>
+                                    <b>Orbital Period:</b> <span>{{ this.planetActive.orbital_period }}</span>
+                                </p>
+                                <p>
+                                    <b>Rotation Period:</b> <span>{{ this.planetActive.rotation_period }}</span>
+                                </p>
+                                <p>
+                                    <b>Terrain:</b> <span>{{ this.planetActive.terrain }}</span>
+                                </p>
+                                <p>
+                                    <b>Climate:</b> <span>{{ this.planetActive.climate }}</span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div v-if="!(searchTerm)">
+                <p class=" pt-2 items-center">
+                    <a  v-if="previousPage"
+                        class="font-semibold hover:cursor-pointer"
+                        @click="() => { loadPeoplePageData(previousPage) }"
+                         >
+                        Previous 
+                    </a>
+                    ||
+                    <a  v-if="nextPage"
+                        class="font-semibold hover:cursor-pointer"
+                        @click="() => { loadPeoplePageData(nextPage) }"
+                         >
+                        Next 
+                    </a>
+                </p>
             </div>
       </div>
   </div>
@@ -44,6 +92,10 @@
             return {
                 peoples: [],
                 peopleActive: null,
+                planetActive: null,
+
+                previousPage: null,
+                nextPage: null,
 
                 searchTerm: '',
             }
@@ -63,21 +115,45 @@
                 }
 
             },
+            loadPeoplePageData: async function(pageURL)
+            {
+                await axios.get(`${pageURL}`).then(response => {
+                    this.loadPageResults(response);
+                });
+            },
             loadPeopleData: async function(peopleURL) 
             {
-                axios.get(`${peopleURL}`).then(response => {
+                this.planetActive = null;
+
+                await axios.get(`${peopleURL}`).then(response => {
                     this.peopleActive = response.data
-                    console.log(response);        
+
+                    axios.get(`${response.data.homeworld}`).then(response => {
+                        this.planetActive = response.data
+                    });
                 });
 
             },
             loadInititalData: async function ()
             {
-                axios.get(`${api}/people/`).then( response => {
-                    console.log(response)
-                    this.peoples = response.data.results
+                await axios.get(`${api}/people/`).then( response => {
+                    this.loadPageResults(response);
                 });
             },
+            loadPageResults: function (response)
+            {
+                this.previousPage = null
+                this.nextPage = null
+                this.peoples = null
+
+                if(response.data.previous)
+                       this.previousPage = response.data.previous
+                    
+                if(response.data.next)
+                    this.nextPage = response.data.next
+
+                this.peoples = response.data.results
+            }
         },
         mounted() 
         {
